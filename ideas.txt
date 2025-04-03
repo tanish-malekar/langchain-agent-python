@@ -1,0 +1,10 @@
+1. Youtube tutorial maker website -> automated everything (pipeline)
+
+2. AI Productivity Assistant with gamification and community
+An AI-powered personal assistant that schedules tasks, manages deadlines, and optimizes daily routines based on user behavior and priorities.
+Uses reinforcement learning to adapt to changing schedules and improve productivity over time.
+Integrates with calendar apps, email, and messaging platforms for seamless workflow management.
+A gamified personal AI assistant that automates task management by generating dynamic schedules based on user goals, sending timely reminders, tracking progress, and rescheduling incomplete tasks. 
+The platform enhances user engagement through a reward system where users earn trophies for milestone achievements and can share progress, fostering a supportive community for goal completion.
+
+3. AI Virtual Shopping Assistant with reccomendation model -> vector dbs for search, recommendation?

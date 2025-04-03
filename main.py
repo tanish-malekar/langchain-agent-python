@@ -1,6 +1,4 @@
 import os
-os.environ['GRPC_DNS_RESOLVER'] = 'native'
-
 from dotenv import load_dotenv
 from typing import Annotated
 from typing_extensions import TypedDict
@@ -9,19 +7,19 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
+from langgraph.checkpoint.memory import MemorySaver
+
+#set GRPC DNS resolver to native
+# This is necessary for the Google AI API to work properly
+os.environ['GRPC_DNS_RESOLVER'] = 'native'
 
 # Load environment variables
 load_dotenv()
 
 
-print(os.environ)
 
 
-from langgraph.checkpoint.memory import MemorySaver
-memory = MemorySaver()
-
-
-# Define conversation state
+# Define LLM state
 class State(TypedDict):
     messages: Annotated[list, add_messages]
 
@@ -36,20 +34,24 @@ llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
 # Bind tools to LLM
 llm_with_tools = llm.bind_tools(tools)
 
-# Define chatbot function
+# Define chatbot node
 def chatbot(state: State):
     response = llm_with_tools.invoke(state["messages"])
     return {"messages": state["messages"] + [response]}
 
-# Add nodes
+# Add nodes to the graph
 graph_builder.add_node("chatbot", chatbot)
 tool_node = ToolNode(tools=[tool])
 graph_builder.add_node("tools", tool_node)
 
-# Add edges
-graph_builder.add_conditional_edges("chatbot", tools_condition)
+# Add edges to the graph
+graph_builder.add_conditional_edges("chatbot", 
+tools_condition)
 graph_builder.add_edge("tools", "chatbot")
 graph_builder.add_edge(START, "chatbot")
+
+#Initialize memory for LLM
+memory = MemorySaver()
 
 # Compile the graph
 graph = graph_builder.compile(checkpointer=memory)
@@ -58,7 +60,6 @@ config = {"configurable": {"thread_id": "1"}}
 
 # Function to handle user input
 def stream_graph_updates(user_input: str):
-    print("User:", user_input)
     try:
         for event in graph.stream({"messages": [{"role": "user", "content": user_input}]},     config):
             for value in event.values():
