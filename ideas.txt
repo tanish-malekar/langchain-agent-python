@@ -1,6 +1,6 @@
 1. Youtube tutorial maker website -> automated everything (pipeline)
 
-2. AI Productivity Assistant with gamification and community
+2. AI Productivity Assistant, optional: (with gamification and community)
 An AI-powered personal assistant that schedules tasks, manages deadlines, and optimizes daily routines based on user behavior and priorities.
 Uses reinforcement learning to adapt to changing schedules and improve productivity over time.
 Integrates with calendar apps, email, and messaging platforms for seamless workflow management.
